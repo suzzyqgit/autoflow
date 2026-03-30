@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTOFLOW — AI業務代行サービス</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f0e8;
+    --accent: #e8ff00;
+    --gray: #1a1a1a;
+    --mid: #2a2a2a;
+    --text-muted: #888;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* カスタムカーソル */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(232,255,0,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* ノイズテクスチャ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ナビゲーション */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,10,0.8);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--accent);
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--black) !important;
+    padding: 10px 24px;
+    font-weight: 700 !important;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--white) !important; transform: translateY(-1px); }
+
+  /* ヒーロー */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 140px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero h1 span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.7);
+    max-width: 540px;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    padding: 18px 48px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: white;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary:hover { color: var(--black); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* 数字 */
+  .hero-numbers {
+    position: absolute;
+    right: 48px;
+    bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    opacity: 0;
+    animation: fadeLeft 0.8s ease 1s forwards;
+  }
+  .number-item { text-align: right; }
+  .number-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .number-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* セクション共通 */
+  section { padding: 120px 48px; position: relative; z-index: 1; }
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 64px;
+  }
+
+  /* 課題セクション */
+  .problem {
+    background: var(--gray);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 48px;
+  }
+  .problem-item {
+    background: var(--gray);
+    padding: 48px 40px;
+    transition: background 0.3s;
+  }
+  .problem-item:hover { background: var(--mid); }
+  .problem-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(232,255,0,0.1);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .problem-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.7);
+  }
+  .problem-text strong {
+    color: var(--white);
+    font-weight: 500;
+    display: block;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  /* サービスセクション */
+  .services { background: var(--black); }
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  .service-item {
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 48px;
+    padding: 48px 40px;
+    transition: background 0.3s;
+    cursor: none;
+    overflow: hidden;
+    position: relative;
+  }
+  .service-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  .service-item:hover::before { width: 4px; }
+  .service-item:hover { background: rgba(232,255,0,0.03); }
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: rgba(255,255,255,0.1);
+    transition: color 0.3s;
+  }
+  .service-item:hover .service-num { color: var(--accent); }
+  .service-body h3 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .service-body p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .service-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    white-space: nowrap;
+  }
+
+  /* 料金セクション */
+  .pricing { background: var(--gray); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  .plan {
+    background: var(--gray);
+    padding: 56px 40px;
+    position: relative;
+    transition: transform 0.3s, background 0.3s;
+  }
+  .plan:hover { transform: translateY(-4px); background: var(--mid); }
+  .plan.featured {
+    background: var(--accent);
+    color: var(--black);
+  }
+  .plan.featured .plan-price,
+  .plan.featured .plan-name,
+  .plan.featured .plan-desc,
+  .plan.featured .plan-features li { color: var(--black); }
+  .plan.featured .plan-features li::before { background: var(--black); }
+  .plan-badge {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--accent);
+    padding: 6px 12px;
+  }
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .plan-price sup {
+    font-size: 32px;
+    vertical-align: super;
+  }
+  .plan-unit {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    margin-bottom: 32px;
+  }
+  .plan-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+  .plan.featured .plan-desc { color: rgba(0,0,0,0.7); }
+  .plan-features {
+    list-style: none;
+    margin-bottom: 40px;
+  }
+  .plan-features li {
+    font-size: 13px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: rgba(245,240,232,0.7);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .plan.featured .plan-features li { border-color: rgba(0,0,0,0.1); }
+  .plan-features li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .plan-btn {
+    width: 100%;
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+    transition: background 0.2s;
+  }
+  .plan-btn:hover { background: rgba(255,255,255,0.2); }
+  .plan.featured .plan-btn {
+    background: var(--black);
+    color: var(--accent);
+  }
+  .plan.featured .plan-btn:hover { background: rgba(0,0,0,0.85); }
+
+  /* フロー */
+  .flow { background: var(--black); }
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 64px;
+    position: relative;
+  }
+  .flow-steps::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(232,255,0,0.2);
+  }
+  .step {
+    padding: 0 32px;
+    text-align: center;
+    position: relative;
+  }
+  .step-dot {
+    width: 64px; height: 64px;
+    border: 1px solid rgba(232,255,0,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 32px;
+    background: var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    position: relative;
+    z-index: 1;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .step:hover .step-dot {
+    background: var(--accent);
+    color: var(--black);
+    border-color: var(--accent);
+  }
+  .step h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .step p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: var(--accent);
+    color: var(--black);
+    text-align: center;
+    padding: 120px 48px;
+  }
+  .cta-section .section-title { margin-bottom: 24px; color: var(--black); }
+  .cta-section p {
+    font-size: 18px;
+    margin-bottom: 48px;
+    opacity: 0.7;
+  }
+  .btn-dark {
+    background: var(--black);
+    color: var(--accent);
+    border: none;
+    padding: 20px 64px;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .btn-dark:hover { transform: translateY(-2px); background: #111; }
+
+  /* フッター */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--accent);
+  }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+  }
+
+  /* スクロールアニメーション */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* レスポンシブ */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 24px 60px; }
+    section { padding: 80px 24px; }
+    .problem-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .service-item { grid-template-columns: 60px 1fr; }
+    .service-tag { display: none; }
+    .flow-steps { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .flow-steps::before { display: none; }
+    .hero-numbers { display: none; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ナビゲーション -->
+<nav>
+  <div class="logo">AUTOFLOW</div>
+  <ul class="nav-links">
+    <li><a href="#services">サービス</a></li>
+    <li><a href="#pricing">料金</a></li>
+    <li><a href="#flow">導入の流れ</a></li>
+    <li><a href="#contact" class="nav-cta">無料相談</a></li>
+  </ul>
+</nav>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-tag">// AI業務代行サービス</p>
+    <h1>
+      繰り返しの仕事を<br>
+      <span>AIに任せる。</span>
+    </h1>
+    <p class="hero-sub">
+      議事録、メール対応、書類整理——<br>
+      あなたの会社の「ムダな作業」を洗い出し、AIで完全自動化します。<br>
+      月額定額・成果保証・最短1週間で稼働。
+    </p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn-primary"><span>無料で相談する</span></a>
+      <a href="#services" class="btn-secondary">サービス詳細を見る →</a>
+    </div>
+  </div>
+  <div class="hero-numbers">
+    <div class="number-item">
+      <div class="number-big">80%</div>
+      <div class="number-label">作業時間の削減率</div>
+    </div>
+    <div class="number-item">
+      <div class="number-big">7日</div>
+      <div class="number-label">最短稼働日数</div>
+    </div>
+    <div class="number-item">
+      <div class="number-big">3万〜</div>
+      <div class="number-label">月額スタート価格</div>
+    </div>
+  </div>
+</section>
+
+<!-- 課題 -->
+<section class="problem">
+  <div class="section-tag">// Problem</div>
+  <h2 class="section-title reveal">こんな悩み、<br>ありませんか？</h2>
+  <div class="problem-grid reveal">
+    <div class="problem-item">
+      <div class="problem-number">01</div>
+      <div class="problem-text">
+        <strong>時間が足りない</strong>
+        毎日の議事録作成や報告書の整理に、貴重な時間が消えていく。
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-number">02</div>
+      <div class="problem-text">
+        <strong>AIを使いたいが難しい</strong>
+        ChatGPTやClaude…試したけど、業務への落とし込み方がわからない。
+      </div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-number">03</div>
+      <div class="problem-text">
+        <strong>人を雇う余裕はない</strong>
+        バックオフィスに人件費をかけるより、本業に集中したい。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- サービス -->
+<section class="services" id="services">
+  <div class="section-tag">// Services</div>
+  <h2 class="section-title reveal">3つの自動化で、<br>業務を変える。</h2>
+  <div class="services-list reveal">
+    <div class="service-item">
+      <div class="service-num">01</div>
+      <div class="service-body">
+        <h3>議事録・報告書の自動生成</h3>
+        <p>会議の録音データをアップロードするだけ。整形・要約・アクション整理まで、AIが数分で完成させます。</p>
+      </div>
+      <div class="service-tag">Document AI</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">02</div>
+      <div class="service-body">
+        <h3>メール・問い合わせ対応文章の自動生成</h3>
+        <p>受信した内容を貼り付けるだけで、貴社のトーンに合った返信文を即座に生成。承認してそのまま送信。</p>
+      </div>
+      <div class="service-tag">Email AI</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">03</div>
+      <div class="service-body">
+        <h3>社内データの検索・要約</h3>
+        <p>散在するPDF・Excel・Wordから、必要な情報を自然言語で即検索。「あのファイルどこだっけ」をゼロに。</p>
+      </div>
+      <div class="service-tag">Search AI</div>
+    </div>
+  </div>
+</section>
+
+<!-- 料金 -->
+<section class="pricing" id="pricing">
+  <div class="section-tag">// Pricing</div>
+  <h2 class="section-title reveal">シンプルな料金体系。<br>いつでも解約可能。</h2>
+  <div class="pricing-grid reveal">
+    <div class="plan">
+      <div class="plan-name">Light</div>
+      <div class="plan-price"><sup>¥</sup>30,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">まずAIを体験したい方へ。1業務の自動化から始めます。</div>
+      <ul class="plan-features">
+        <li>1業務の自動化設定</li>
+        <li>月2回の改善対応</li>
+        <li>メールサポート</li>
+        <li>いつでも解約可能</li>
+      </ul>
+      <a href="https://buy.stripe.com/fZufZh5FHcRV9qK3Zs2VG00" target="_blank" class="plan-btn" style="display:block;text-align:center;text-decoration:none;">申し込む</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">人気No.1</div>
+      <div class="plan-name">Standard</div>
+      <div class="plan-price"><sup>¥</sup>70,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">最も効果を実感いただけるプラン。3業務を同時に自動化。</div>
+      <ul class="plan-features">
+        <li>3業務の自動化設定</li>
+        <li>毎週の改善対応</li>
+        <li>チャット＋電話サポート</li>
+        <li>月次レポート</li>
+        <li>いつでも解約可能</li>
+      </ul>
+      <a href="https://buy.stripe.com/aFa3cv5FHcRVcCW8fI2VG02" target="_blank" class="plan-btn" style="display:block;text-align:center;text-decoration:none;">申し込む</a>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Full</div>
+      <div class="plan-price"><sup>¥</sup>150,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">業務全体をお任せ。専任担当が伴走します。</div>
+      <ul class="plan-features">
+        <li>業務数無制限</li>
+        <li>専任担当による対応</li>
+        <li>優先サポート（即日対応）</li>
+        <li>月次戦略レポート</li>
+        <li>カスタム開発対応</li>
+      </ul>
+      <a href="https://buy.stripe.com/9B628rb01cRV6ey2Vo2VG03" target="_blank" class="plan-btn" style="display:block;text-align:center;text-decoration:none;">申し込む</a>
+    </div>
+  </div>
+</section>
+
+<!-- フロー -->
+<section class="flow" id="flow">
+  <div class="section-tag">// How it works</div>
+  <h2 class="section-title reveal">最短7日で、<br>自動化が動き出す。</h2>
+  <div class="flow-steps reveal">
+    <div class="step">
+      <div class="step-dot">1</div>
+      <h4>無料ヒアリング</h4>
+      <p>現在の業務フローをお聞きし、自動化できる箇所をご提案します。</p>
+    </div>
+    <div class="step">
+      <div class="step-dot">2</div>
+      <h4>設計・構築</h4>
+      <p>貴社の業務に合わせてAIを設定。既存ツールへの組み込みも対応。</p>
+    </div>
+    <div class="step">
+      <div class="step-dot">3</div>
+      <h4>テスト稼働</h4>
+      <p>実際の業務データで精度を確認。調整を繰り返し品質を高めます。</p>
+    </div>
+    <div class="step">
+      <div class="step-dot">4</div>
+      <h4>本番運用開始</h4>
+      <p>引き渡し後もモニタリングと改善を継続。成果が出るまで伴走。</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="section-title">まず、話しましょう。</h2>
+  <p>無料相談30分。あなたの業務でどこが自動化できるか、その場でお伝えします。</p>
+  <a href="mailto:kty12522@gmail.com" class="btn-dark">無料で相談する（30分）</a>
+</section>
+
+<!-- フッター -->
+<footer>
+  <div class="footer-logo">AUTOFLOW</div>
+  <div class="footer-copy">© 2026 AUTOFLOW. All rights reserved.</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // カスタムカーソル
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    cursorRing.style.left = ringX + 'px';
+    cursorRing.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursorRing.style.width = '60px';
+      cursorRing.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      cursorRing.style.width = '40px';
+      cursorRing.style.height = '40px';
+    });
+  });
+
+  // スクロールアニメーション
+  const reveals = document.querySelectorAll('
