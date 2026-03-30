@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AUTOFLOW — AI業務代行サービス</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --black: #0a0a0a;
@@ -23,7 +21,7 @@
   body {
     background: var(--black);
     color: var(--white);
-    font-family: 'Noto Sans JP', sans-serif;
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Sans', 'Yu Gothic', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
     cursor: none;
@@ -77,7 +75,7 @@
     background: rgba(10,10,10,0.8);
   }
   .logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 28px;
     letter-spacing: 4px;
     color: var(--accent);
@@ -90,7 +88,7 @@
   .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -137,23 +135,23 @@
   }
 
   .hero-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 11px;
     letter-spacing: 4px;
     color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 32px;
-    opacity: 0;
+    opacity: 1;
     animation: fadeUp 0.8s ease 0.2s forwards;
   }
 
   .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: clamp(72px, 12vw, 160px);
     line-height: 0.9;
     letter-spacing: 2px;
     margin-bottom: 40px;
-    opacity: 0;
+    opacity: 1;
     animation: fadeUp 0.8s ease 0.4s forwards;
   }
   .hero h1 span {
@@ -167,7 +165,7 @@
     color: rgba(245,240,232,0.7);
     max-width: 540px;
     margin-bottom: 56px;
-    opacity: 0;
+    opacity: 1;
     animation: fadeUp 0.8s ease 0.6s forwards;
   }
 
@@ -175,7 +173,7 @@
     display: flex;
     gap: 16px;
     align-items: center;
-    opacity: 0;
+    opacity: 1;
     animation: fadeUp 0.8s ease 0.8s forwards;
   }
   .btn-primary {
@@ -183,7 +181,7 @@
     color: var(--black);
     border: none;
     padding: 18px 48px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -209,7 +207,7 @@
 
   .btn-secondary {
     color: var(--white);
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 12px;
     letter-spacing: 2px;
     text-decoration: none;
@@ -227,18 +225,18 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
-    opacity: 0;
+    opacity: 1;
     animation: fadeLeft 0.8s ease 1s forwards;
   }
   .number-item { text-align: right; }
   .number-big {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 56px;
     line-height: 1;
     color: var(--accent);
   }
   .number-label {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10px;
     letter-spacing: 2px;
     color: var(--text-muted);
@@ -257,7 +255,7 @@
   /* セクション共通 */
   section { padding: 120px 48px; position: relative; z-index: 1; }
   .section-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10px;
     letter-spacing: 4px;
     color: var(--accent);
@@ -265,7 +263,7 @@
     margin-bottom: 24px;
   }
   .section-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: clamp(48px, 7vw, 96px);
     line-height: 0.95;
     letter-spacing: 2px;
@@ -292,7 +290,7 @@
   }
   .problem-item:hover { background: var(--mid); }
   .problem-number {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 80px;
     color: rgba(232,255,0,0.1);
     line-height: 1;
@@ -342,7 +340,7 @@
   .service-item:hover::before { width: 4px; }
   .service-item:hover { background: rgba(232,255,0,0.03); }
   .service-num {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 48px;
     color: rgba(255,255,255,0.1);
     transition: color 0.3s;
@@ -359,7 +357,7 @@
     line-height: 1.7;
   }
   .service-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10px;
     letter-spacing: 2px;
     color: var(--text-muted);
@@ -396,7 +394,7 @@
   .plan-badge {
     position: absolute;
     top: 24px; right: 24px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -405,13 +403,13 @@
     padding: 6px 12px;
   }
   .plan-name {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 32px;
     letter-spacing: 3px;
     margin-bottom: 8px;
   }
   .plan-price {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 72px;
     line-height: 1;
     margin-bottom: 4px;
@@ -421,7 +419,7 @@
     vertical-align: super;
   }
   .plan-unit {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10px;
     letter-spacing: 2px;
     opacity: 0.5;
@@ -458,7 +456,7 @@
   .plan-btn {
     width: 100%;
     padding: 16px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -508,7 +506,7 @@
     justify-content: center;
     margin: 0 auto 32px;
     background: var(--black);
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 28px;
     color: var(--accent);
     position: relative;
@@ -549,7 +547,7 @@
     color: var(--accent);
     border: none;
     padding: 20px 64px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 3px;
@@ -571,13 +569,13 @@
     align-items: center;
   }
   .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Black', sans-serif;
     font-size: 24px;
     letter-spacing: 4px;
     color: var(--accent);
   }
   .footer-copy {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 10px;
     letter-spacing: 2px;
     color: var(--text-muted);
@@ -585,8 +583,8 @@
 
   /* スクロールアニメーション */
   .reveal {
-    opacity: 0;
-    transform: translateY(40px);
+    opacity: 1;
+    transform: translateY(0);
     transition: opacity 0.8s ease, transform 0.8s ease;
   }
   .reveal.visible {
