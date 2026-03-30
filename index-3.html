@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTOFLOW — AI業務代行サービス</title>
+<meta property="og:title" content="AUTOFLOW — AIに任せる、繰り返しの仕事。">
+<meta property="og:description" content="議事録・メール対応・書類整理を完全自動化。月額定額・最短7日で稼働。">
+<meta property="og:image" content="https://suzzyqgit.github.io/autoflow/ogp.png">
+<meta property="og:url" content="https://suzzyqgit.github.io/autoflow/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AUTOFLOW — AIに任せる、繰り返しの仕事。">
+<meta name="twitter:description" content="議事録・メール対応・書類整理を完全自動化。月額定額・最短7日で稼働。">
+<meta name="twitter:image" content="https://suzzyqgit.github.io/autoflow/ogp.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Helvetica Neue', Arial, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+a { text-decoration: none; color: inherit; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(10,10,10,0.95); border-bottom: 1px solid #222; }
+.logo { font-size: 20px; font-weight: 900; letter-spacing: 4px; color: #e8ff00; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { font-size: 12px; color: #888; letter-spacing: 1px; }
+.nav-links a:hover { color: #f5f0e8; }
+.nav-cta { background: #e8ff00 !important; color: #0a0a0a !important; padding: 10px 22px; font-weight: 700; border-radius: 2px; }
+
+.hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 40px 60px; background: #0a0a0a; }
+.hero-content { max-width: 700px; }
+.hero-tag { font-size: 11px; letter-spacing: 4px; color: #e8ff00; margin-bottom: 28px; }
+.hero h1 { font-size: clamp(48px, 9vw, 110px); font-weight: 900; line-height: 1; letter-spacing: -1px; margin-bottom: 32px; }
+.hero h1 span { color: #e8ff00; display: block; }
+.hero-sub { font-size: 16px; line-height: 1.9; color: #aaa; margin-bottom: 48px; }
+.hero-btns { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.btn-primary { background: #e8ff00; color: #0a0a0a; padding: 16px 40px; font-size: 14px; font-weight: 700; letter-spacing: 1px; border-radius: 2px; display: inline-block; }
+.btn-primary:hover { background: #fff; }
+.btn-secondary { font-size: 13px; color: #aaa; border-bottom: 1px solid #555; padding-bottom: 2px; }
+.hero-nums { display: flex; gap: 48px; margin-top: 60px; }
+.num-item .big { font-size: 48px; font-weight: 900; color: #e8ff00; line-height: 1; }
+.num-item .label { font-size: 11px; color: #666; margin-top: 4px; }
+
+section { padding: 100px 40px; }
+.section-tag { font-size: 10px; letter-spacing: 4px; color: #e8ff00; margin-bottom: 20px; }
+.section-title { font-size: clamp(36px, 6vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 56px; }
+hr.divider { border: none; border-top: 1px solid #222; margin: 0; }
+
+/* 課題 */
+.problem { background: #111; }
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #222; }
+.problem-item { background: #111; padding: 40px 32px; }
+.problem-item:hover { background: #1a1a1a; }
+.p-num { font-size: 56px; font-weight: 900; color: #222; line-height: 1; margin-bottom: 12px; }
+.p-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.p-desc { font-size: 13px; color: #888; line-height: 1.8; }
+
+/* サービス */
+.services { background: #0a0a0a; }
+.service-item { display: flex; align-items: center; gap: 32px; padding: 36px 32px; border-left: 3px solid #e8ff00; background: #111; margin-bottom: 2px; }
+.service-item:hover { background: #1a1a1a; }
+.s-num { font-size: 40px; font-weight: 900; color: #2a2a2a; min-width: 60px; }
+.s-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.s-body p { font-size: 13px; color: #888; line-height: 1.7; }
+.s-tag { background: #e8ff00; color: #0a0a0a; font-size: 10px; font-weight: 700; padding: 4px 12px; margin-left: auto; white-space: nowrap; }
+
+/* 料金 */
+.pricing { background: #111; }
+.plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #222; }
+.plan { background: #111; padding: 48px 32px; }
+.plan:hover { background: #1a1a1a; }
+.plan.featured { background: #e8ff00; color: #0a0a0a; }
+.plan-name { font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 6px; }
+.plan-price { font-size: 56px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+.plan-price sup { font-size: 24px; vertical-align: super; }
+.plan-unit { font-size: 11px; color: #888; margin-bottom: 24px; }
+.plan.featured .plan-unit { color: #555; }
+.plan-desc { font-size: 13px; color: #888; line-height: 1.7; margin-bottom: 24px; }
+.plan.featured .plan-desc { color: #444; }
+.plan-features { list-style: none; margin-bottom: 32px; }
+.plan-features li { font-size: 13px; padding: 9px 0; border-bottom: 1px solid #222; color: #ccc; display: flex; gap: 10px; align-items: center; }
+.plan.featured .plan-features li { border-color: rgba(0,0,0,0.1); color: #333; }
+.plan-features li::before { content: ''; width: 6px; height: 6px; background: #e8ff00; border-radius: 50%; flex-shrink: 0; }
+.plan.featured .plan-features li::before { background: #0a0a0a; }
+.plan-badge { display: inline-block; background: #0a0a0a; color: #e8ff00; font-size: 10px; font-weight: 700; padding: 4px 12px; margin-bottom: 16px; letter-spacing: 1px; }
+.plan-btn { display: block; width: 100%; padding: 14px; text-align: center; font-size: 13px; font-weight: 700; letter-spacing: 1px; background: rgba(255,255,255,0.1); color: #f5f0e8; border: none; cursor: pointer; }
+.plan-btn:hover { background: rgba(255,255,255,0.2); }
+.plan.featured .plan-btn { background: #0a0a0a; color: #e8ff00; }
+
+/* フロー */
+.flow { background: #0a0a0a; }
+.flow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 56px; }
+.step { text-align: center; }
+.step-circle { width: 60px; height: 60px; border: 2px solid #e8ff00; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 18px; font-weight: 900; color: #e8ff00; }
+.step:hover .step-circle { background: #e8ff00; color: #0a0a0a; }
+.step h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.step p { font-size: 12px; color: #888; line-height: 1.7; }
+.step-day { font-size: 10px; color: #e8ff00; letter-spacing: 2px; margin-bottom: 8px; }
+
+/* CTA */
+.cta-section { background: #e8ff00; color: #0a0a0a; text-align: center; padding: 100px 40px; }
+.cta-section .section-title { color: #0a0a0a; margin-bottom: 20px; }
+.cta-section p { font-size: 16px; color: #444; margin-bottom: 40px; }
+.btn-dark { background: #0a0a0a; color: #e8ff00; padding: 18px 56px; font-size: 14px; font-weight: 700; letter-spacing: 2px; display: inline-block; }
+.btn-dark:hover { background: #222; }
+
+footer { background: #0a0a0a; border-top: 1px solid #222; padding: 40px; display: flex; justify-content: space-between; align-items: center; }
+.footer-logo { font-size: 18px; font-weight: 900; letter-spacing: 4px; color: #e8ff00; }
+.footer-copy { font-size: 11px; color: #555; }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  section { padding: 60px 20px; }
+  .hero { padding: 80px 20px 40px; }
+  .problem-grid, .plan-grid, .flow-steps { grid-template-columns: 1fr; }
+  .service-item { flex-direction: column; align-items: flex-start; }
+  .s-tag { margin-left: 0; }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
+  .hero-nums { gap: 24px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AUTOFLOW</div>
+  <ul class="nav-links">
+    <li><a href="#services">サービス</a></li>
+    <li><a href="#pricing">料金</a></li>
+    <li><a href="#flow">導入の流れ</a></li>
+    <li><a href="#contact" class="nav-cta">無料相談</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">// AI業務代行サービス</div>
+    <h1>繰り返しの仕事を<span>AIに任せる。</span></h1>
+    <p class="hero-sub">議事録、メール対応、書類整理——<br>あなたの会社の「ムダな作業」を洗い出し、AIで完全自動化します。<br>月額定額・成果保証・最短1週間で稼働。</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">無料で相談する</a>
+      <a href="#services" class="btn-secondary">サービス詳細を見る →</a>
+    </div>
+    <div class="hero-nums">
+      <div class="num-item"><div class="big">80%</div><div class="label">作業時間の削減率</div></div>
+      <div class="num-item"><div class="big">7日</div><div class="label">最短稼働日数</div></div>
+      <div class="num-item"><div class="big">3万〜</div><div class="label">月額スタート価格</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="problem" id="problem">
+  <div class="section-tag">// Problem</div>
+  <h2 class="section-title">こんな悩み、<br>ありませんか？</h2>
+  <div class="problem-grid">
+    <div class="problem-item">
+      <div class="p-num">01</div>
+      <div class="p-title">時間が足りない</div>
+      <div class="p-desc">毎日の議事録作成や報告書の整理に、貴重な時間が消えていく。</div>
+    </div>
+    <div class="problem-item">
+      <div class="p-num">02</div>
+      <div class="p-title">AIを使いたいが難しい</div>
+      <div class="p-desc">ChatGPTやClaude…試したけど、業務への落とし込み方がわからない。</div>
+    </div>
+    <div class="problem-item">
+      <div class="p-num">03</div>
+      <div class="p-title">人を雇う余裕はない</div>
+      <div class="p-desc">バックオフィスに人件費をかけるより、本業に集中したい。</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="services" id="services">
+  <div class="section-tag">// Services</div>
+  <h2 class="section-title">3つの自動化で、<br>業務を変える。</h2>
+  <div class="service-item">
+    <div class="s-num">01</div>
+    <div class="s-body">
+      <h3>議事録・報告書の自動生成</h3>
+      <p>会議の録音データをアップロードするだけ。整形・要約・アクション整理まで、AIが数分で完成させます。</p>
+    </div>
+    <div class="s-tag">Document AI</div>
+  </div>
+  <div class="service-item">
+    <div class="s-num">02</div>
+    <div class="s-body">
+      <h3>メール・問い合わせ対応文章の自動生成</h3>
+      <p>受信した内容を貼り付けるだけで、貴社のトーンに合った返信文を即座に生成。承認してそのまま送信。</p>
+    </div>
+    <div class="s-tag">Email AI</div>
+  </div>
+  <div class="service-item">
+    <div class="s-num">03</div>
+    <div class="s-body">
+      <h3>社内データの検索・要約</h3>
+      <p>散在するPDF・Excel・Wordから、必要な情報を自然言語で即検索。「あのファイルどこだっけ」をゼロに。</p>
+    </div>
+    <div class="s-tag">Search AI</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="pricing" id="pricing">
+  <div class="section-tag">// Pricing</div>
+  <h2 class="section-title">シンプルな料金体系。<br>いつでも解約可能。</h2>
+  <div class="plan-grid">
+    <div class="plan">
+      <div class="plan-name">Light</div>
+      <div class="plan-price"><sup>¥</sup>30,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">まずAIを体験したい方へ。1業務の自動化から始めます。</div>
+      <ul class="plan-features">
+        <li>1業務の自動化設定</li>
+        <li>月2回の改善対応</li>
+        <li>メールサポート</li>
+        <li>いつでも解約可能</li>
+      </ul>
+      <a href="https://buy.stripe.com/fZufZh5FHcRV9qK3Zs2VG00" target="_blank" class="plan-btn">申し込む</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">人気 No.1</div>
+      <div class="plan-name">Standard</div>
+      <div class="plan-price"><sup>¥</sup>70,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">最も効果を実感いただけるプラン。3業務を同時に自動化。</div>
+      <ul class="plan-features">
+        <li>3業務の自動化設定</li>
+        <li>毎週の改善対応</li>
+        <li>チャット＋電話サポート</li>
+        <li>月次レポート</li>
+        <li>いつでも解約可能</li>
+      </ul>
+      <a href="https://buy.stripe.com/aFa3cv5FHcRVcCW8fI2VG02" target="_blank" class="plan-btn">申し込む</a>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Full</div>
+      <div class="plan-price"><sup>¥</sup>150,000</div>
+      <div class="plan-unit">/ 月（税別）</div>
+      <div class="plan-desc">業務全体をお任せ。専任担当が伴走します。</div>
+      <ul class="plan-features">
+        <li>業務数無制限</li>
+        <li>専任担当による対応</li>
+        <li>優先サポート（即日対応）</li>
+        <li>月次戦略レポート</li>
+        <li>カスタム開発対応</li>
+      </ul>
+      <a href="https://buy.stripe.com/9B628rb01cRV6ey2Vo2VG03" target="_blank" class="plan-btn">申し込む</a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="flow" id="flow">
+  <div class="section-tag">// How it works</div>
+  <h2 class="section-title">最短7日で、<br>自動化が動き出す。</h2>
+  <div class="flow-steps">
+    <div class="step">
+      <div class="step-day">Day 1</div>
+      <div class="step-circle">1</div>
+      <h4>無料ヒアリング</h4>
+      <p>現在の業務フローをお聞きし、自動化できる箇所をご提案します。</p>
+    </div>
+    <div class="step">
+      <div class="step-day">Day 2-4</div>
+      <div class="step-circle">2</div>
+      <h4>設計・構築</h4>
+      <p>貴社に合わせてAIを設定。既存ツールへの組み込みも対応。</p>
+    </div>
+    <div class="step">
+      <div class="step-day">Day 5-6</div>
+      <div class="step-circle">3</div>
+      <h4>テスト稼働</h4>
+      <p>実際の業務データで精度を確認。調整を繰り返し品質を高めます。</p>
+    </div>
+    <div class="step">
+      <div class="step-day">Day 7+</div>
+      <div class="step-circle">4</div>
+      <h4>本番運用開始</h4>
+      <p>引き渡し後もモニタリングと改善を継続。成果が出るまで伴走。</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <h2 class="section-title">まず、話しましょう。</h2>
+  <p>無料相談30分。あなたの業務でどこが自動化できるか、その場でお伝えします。</p>
+  <a href="mailto:kty12522@gmail.com" class="btn-dark">無料で相談する（30分）</a>
+</section>
+
+<footer>
+  <div class="footer-logo">AUTOFLOW</div>
+  <div class="footer-copy">© 2026 AUTOFLOW. All rights reserved. kty12522@gmail.com</div>
+</footer>
+
+</body>
+</html>
